@@ -58,10 +58,6 @@
             <artifactId>r2dbc-h2</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <dependency>
-            <groupId>io.projectreactor</groupId>
-            <artifactId>reactor-test</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
