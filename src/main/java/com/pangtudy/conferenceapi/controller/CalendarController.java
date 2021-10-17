@@ -20,12 +20,25 @@ public class CalendarController {
         return calendarService.retrieveSchedules(year);
     }
 
-    @PostMapping("/{year}/{month}/{day}/schedule")
+    @PostMapping("/schedule")
     public Mono<ScheduleDto> setSchedule(
-            @PathVariable int year,
-            @PathVariable int month,
-            @PathVariable int day
+            @RequestBody ScheduleDto scheduleDto
     ) {
-        return calendarService.saveSchedule(year, month, day);
+        return calendarService.saveSchedule(scheduleDto);
+    }
+
+    @PutMapping("/schedules/{idx}")
+    public Mono<ScheduleDto> updateSchedule(
+            @PathVariable long idx,
+            @RequestBody ScheduleDto scheduleDto
+    ) {
+        return calendarService.updateSchedule(idx, scheduleDto);
+    }
+
+    @DeleteMapping("/schedules/{idx}")
+    public Mono<Void> deleteSchedule(
+            @PathVariable long idx
+    ) {
+        return calendarService.deleteSchedule(idx);
     }
 }
