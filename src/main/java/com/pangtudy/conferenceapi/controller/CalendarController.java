@@ -15,6 +15,7 @@ import reactor.core.publisher.Mono;
 public class CalendarController {
     private final CalendarService calendarService;
 
+    @CrossOrigin(origins = "*")
     @GetMapping("/{year}/schedules")
     public Flux<ScheduleDto> getSchedulesByYear(@PathVariable int year) {
         return calendarService.retrieveSchedules(year);
