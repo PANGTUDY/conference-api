@@ -8,7 +8,7 @@ import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Table
 @Getter
@@ -18,14 +18,17 @@ import java.time.LocalDateTime;
 public class Schedule {
     @Id
     Long id;
+    Integer year;
+    Integer month;
+    Integer day;
     String title;
-    LocalDateTime startTime;
-    LocalDateTime endTime;
+    LocalTime startTime;
+    LocalTime endTime;
     String writer;
     Integer alarm;
     String comment;
 
     public static Schedule of(ScheduleDto scheduleDto) {
-        return new Schedule(scheduleDto.getId(), scheduleDto.getTitle(), scheduleDto.getStartTime(), scheduleDto.getEndTime(), scheduleDto.getWriter(), scheduleDto.getAlarm(), scheduleDto.getComment());
+        return new Schedule(scheduleDto.getId(), scheduleDto.getYear(), scheduleDto.getMonth(), scheduleDto.getDay(), scheduleDto.getTitle(), scheduleDto.getStartTime(), scheduleDto.getEndTime(), scheduleDto.getWriter(), scheduleDto.getAlarm(), scheduleDto.getComment());
     }
 }
