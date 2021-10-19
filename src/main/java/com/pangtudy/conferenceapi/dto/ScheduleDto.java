@@ -4,22 +4,28 @@ import com.pangtudy.conferenceapi.entity.Schedule;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Data
 @Builder
 public class ScheduleDto {
-    private Long id;
+    private long id;
+    private int year;
+    private int month;
+    private int day;
     private String title;
-    private LocalDateTime startTime;
-    private LocalDateTime endTime;
+    private LocalTime startTime;
+    private LocalTime endTime;
     private String writer;
-    private Integer alarm;
+    private int alarm;
     private String comment;
 
     public static ScheduleDto of(Schedule schedule) {
         return ScheduleDto.builder()
                 .id(schedule.getId())
+                .year(schedule.getYear())
+                .month(schedule.getMonth())
+                .day(schedule.getDay())
                 .title(schedule.getTitle())
                 .startTime(schedule.getStartTime())
                 .endTime(schedule.getEndTime())
