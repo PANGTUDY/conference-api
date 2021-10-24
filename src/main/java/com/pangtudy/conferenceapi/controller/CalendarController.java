@@ -1,9 +1,12 @@
 package com.pangtudy.conferenceapi.controller;
 
+import com.pangtudy.conferenceapi.core.channel.ScheduleChannel;
 import com.pangtudy.conferenceapi.dto.ScheduleDto;
+import com.pangtudy.conferenceapi.dto.ScheduleEventDto;
 import com.pangtudy.conferenceapi.service.CalendarService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -14,6 +17,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CalendarController {
     private final CalendarService calendarService;
+    private final ScheduleChannel scheduleChannel;
 
     @GetMapping("/{year}/schedules")
     public Flux<ScheduleDto> getSchedulesByYear(@PathVariable int year) {
@@ -40,5 +44,11 @@ public class CalendarController {
             @PathVariable long idx
     ) {
         return calendarService.deleteSchedule(idx);
+    }
+
+    @CrossOrigin("*")
+    @GetMapping(value = "/schedules/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    public Flux<ScheduleEventDto> scheduleSse() {
+        return scheduleChannel.asFlux();
     }
 }

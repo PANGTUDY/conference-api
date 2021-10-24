@@ -1,6 +1,9 @@
 package com.pangtudy.conferenceapi.service;
 
+import com.pangtudy.conferenceapi.core.channel.ScheduleChannel;
+import com.pangtudy.conferenceapi.core.constants.ScheduleEventType;
 import com.pangtudy.conferenceapi.dto.ScheduleDto;
+import com.pangtudy.conferenceapi.dto.ScheduleEventDto;
 import com.pangtudy.conferenceapi.entity.Schedule;
 import com.pangtudy.conferenceapi.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +18,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class CalendarService {
     private final ScheduleRepository scheduleRepository;
+    private final ScheduleChannel scheduleChannel;
 
     public Flux<ScheduleDto> retrieveSchedules(int year) {
         return scheduleRepository.findByYearOrderByStartTime(year)
@@ -35,6 +39,12 @@ public class CalendarService {
                     schedule.setEndTime(scheduleDto.getEndTime());
                     schedule.setComment(scheduleDto.getComment());
                     schedule.setAlarm(scheduleDto.getAlarm());
+
+                    scheduleChannel.getSink()
+                            .tryEmitNext(ScheduleEventDto.builder()
+                                    .type(ScheduleEventType.MODIFY)
+                                    .schedule(ScheduleDto.of(schedule))
+                                    .build());
                     return schedule;
                 })
                 .flatMap(schedule -> scheduleRepository.save(schedule).map(ScheduleDto::of));
