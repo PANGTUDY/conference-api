@@ -27,7 +27,15 @@ public class CalendarService {
 
     @Transactional
     public Mono<ScheduleDto> saveSchedule(ScheduleDto scheduleDto) {
-        return scheduleRepository.save(Schedule.of(scheduleDto)).map(ScheduleDto::of);
+        return scheduleRepository.save(Schedule.of(scheduleDto))
+                .map(schedule -> {
+                    scheduleChannel.getSink()
+                            .tryEmitNext(ScheduleEventDto.builder()
+                                    .type(ScheduleEventType.CREATE)
+                                    .schedule(ScheduleDto.of(schedule))
+                                    .build());
+                    return ScheduleDto.of(schedule);
+                });
     }
 
     @Transactional
@@ -52,6 +60,14 @@ public class CalendarService {
 
     @Transactional
     public Mono<Void> deleteSchedule(long idx) {
+        scheduleRepository.findById(idx).subscribe(schedule -> {
+            scheduleChannel.getSink()
+                    .tryEmitNext(ScheduleEventDto.builder()
+                            .type(ScheduleEventType.DELETE)
+                            .schedule(ScheduleDto.of(schedule))
+                            .build());
+
+        });
         return scheduleRepository.deleteById(idx);
     }
 }
