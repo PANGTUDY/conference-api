@@ -11,7 +11,7 @@ public class ScheduleChannel {
     private final Many<ScheduleEventDto> scheduleEvents;
 
     public ScheduleChannel() {
-        this.scheduleEvents = Sinks.many().multicast().onBackpressureBuffer();
+        this.scheduleEvents = Sinks.many().multicast().directAllOrNothing();
     }
     public Many<ScheduleEventDto> getSink() {
         return this.scheduleEvents;
