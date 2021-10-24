@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.time.LocalDateTime;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -19,7 +17,7 @@ public class CalendarService {
     private final ScheduleRepository scheduleRepository;
 
     public Flux<ScheduleDto> retrieveSchedules(int year) {
-        return scheduleRepository.findByStartTimeBetween(LocalDateTime.of(year, 1, 1, 0, 0), LocalDateTime.of(year, 12, 31, 23, 59))
+        return scheduleRepository.findByYearOrderByStartTime(year)
                 .map(ScheduleDto::of);
     }
 
@@ -42,6 +40,7 @@ public class CalendarService {
                 .flatMap(schedule -> scheduleRepository.save(schedule).map(ScheduleDto::of));
     }
 
+    @Transactional
     public Mono<Void> deleteSchedule(long idx) {
         return scheduleRepository.deleteById(idx);
     }

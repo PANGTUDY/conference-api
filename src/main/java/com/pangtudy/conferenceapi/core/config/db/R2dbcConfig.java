@@ -13,11 +13,4 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration {
     public ConnectionFactory connectionFactory() {
         return null;
     }
-//
-//    @Override
-//    public List<Object> getCustomConverters() {
-//        List<Object> converterList = new ArrayList<>();
-//        converterList.add(new ScheduleReadConverter());
-//        return converterList;
-//    }
 }
