@@ -29,6 +29,15 @@ public class Schedule {
     String comment;
 
     public static Schedule of(ScheduleDto scheduleDto) {
-        return new Schedule(scheduleDto.getId(), scheduleDto.getYear(), scheduleDto.getMonth(), scheduleDto.getDay(), scheduleDto.getTitle(), scheduleDto.getStartTime(), scheduleDto.getEndTime(), scheduleDto.getWriter(), scheduleDto.getAlarm(), scheduleDto.getComment());
+        return new Schedule(scheduleDto.getId(),
+                scheduleDto.getYear(),
+                scheduleDto.getMonth(),
+                scheduleDto.getDay(),
+                scheduleDto.getTitle(),
+                scheduleDto.getStartTime(),
+                scheduleDto.getEndTime(),
+                scheduleDto.getWriter(),
+                scheduleDto.getAlarm(),
+                scheduleDto.getComment());
     }
 }

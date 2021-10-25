@@ -7,17 +7,10 @@ import org.springframework.data.r2dbc.repository.config.EnableR2dbcRepositories;
 
 @Configuration
 @EnableR2dbcRepositories
-public class R2dbcConfiguration extends AbstractR2dbcConfiguration {
+public class R2dbcConfig extends AbstractR2dbcConfiguration {
 
     @Override
     public ConnectionFactory connectionFactory() {
         return null;
     }
-//
-//    @Override
-//    public List<Object> getCustomConverters() {
-//        List<Object> converterList = new ArrayList<>();
-//        converterList.add(new ScheduleReadConverter());
-//        return converterList;
-//    }
 }
