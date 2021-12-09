@@ -9,7 +9,7 @@ import java.time.LocalTime;
 @Data
 @Builder
 public class ScheduleDto {
-    private long id;
+    private Long id;
     private int year;
     private int month;
     private int day;
