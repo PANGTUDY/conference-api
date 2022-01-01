@@ -1,5 +1,15 @@
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
 spring:
+  application:
+    name: conference-api
+
   r2dbc:
     url: r2dbc:h2:mem:///test
     username: sa
