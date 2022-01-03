@@ -46,7 +46,6 @@ public class CalendarController {
         return calendarService.deleteSchedule(idx);
     }
 
-    @CrossOrigin("*")
     @GetMapping(value = "/schedules/sse", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ScheduleEventDto> scheduleSse() {
         return scheduleChannel.asFlux();
