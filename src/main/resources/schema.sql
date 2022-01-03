@@ -36,3 +36,15 @@ VALUES (2021, 10, 20, '스터디 회의', '20:00:00', '22:00:00', 'ch4njun', 0, 
 INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
 VALUES (2021, 10, 30, '회의장 개발 회의', '22:00:00', '00:00:00', 'ch4njun', 1, 'SAMPLE12');
 
+INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
+VALUES (2022, 1, 5, '회식', '18:00:00', '22:00:00', 'ch4njun', 1, 'SAMPLE7');
+INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
+VALUES (2022, 1, 5, '스터디 회의', '20:00:00', '22:00:00', 'ch4njun', 0, 'SAMPLE8');
+INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
+VALUES (2022, 1, 10, '프론트 회의', '23:00:00', '01:00:00', 'ch4njun', 1, 'SAMPLE9');
+INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
+VALUES (2022, 1, 3, '프로젝트 회의', '15:00:00', '17:00:00', 'ch4njun', 1, 'SAMPLE10');
+INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
+VALUES (2022, 1, 20, '스터디 회의', '20:00:00', '22:00:00', 'ch4njun', 0, 'SAMPLE11');
+INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
+VALUES (2022, 1, 30, '회의장 개발 회의', '22:00:00', '00:00:00', 'ch4njun', 1, 'SAMPLE12');
