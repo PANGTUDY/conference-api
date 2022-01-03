@@ -60,14 +60,15 @@ public class CalendarService {
 
     @Transactional
     public Mono<Void> deleteSchedule(long idx) {
-        scheduleRepository.findById(idx).subscribe(schedule -> {
-            scheduleChannel.getSink()
-                    .tryEmitNext(ScheduleEventDto.builder()
-                            .type(ScheduleEventType.DELETE)
-                            .schedule(ScheduleDto.of(schedule))
-                            .build());
-
-        });
-        return scheduleRepository.deleteById(idx);
+        return scheduleRepository.deleteById(idx)
+                .doAfterTerminate(() -> {
+                    scheduleChannel.getSink()
+                            .tryEmitNext(ScheduleEventDto.builder()
+                                    .type(ScheduleEventType.DELETE)
+                                    .schedule(ScheduleDto.builder()
+                                            .id(idx)
+                                            .build())
+                                    .build());
+                });
     }
 }
