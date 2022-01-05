@@ -1,13 +1,17 @@
 package com.pangtudy.conferenceapi.dto;
 
 import com.pangtudy.conferenceapi.entity.Schedule;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalTime;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ScheduleDto {
     private Long id;
     private int year;
