@@ -10,7 +10,7 @@ import org.springframework.data.relational.core.mapping.Table;
 
 import java.util.List;
 
-@Table(value = "User")
+@Table(value = "user_info")
 @Getter
 @Setter
 @AllArgsConstructor
