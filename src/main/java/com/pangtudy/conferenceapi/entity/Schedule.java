@@ -6,9 +6,11 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
 
 import java.time.LocalTime;
+import java.util.List;
 
 @Table
 @Getter
@@ -25,6 +27,9 @@ public class Schedule {
     LocalTime startTime;
     LocalTime endTime;
     String writer;
+
+    @Transient
+    List<ParticipantInfo> participants;
     Integer alarm;
     String comment;
 
@@ -37,6 +42,7 @@ public class Schedule {
                 scheduleDto.getStartTime(),
                 scheduleDto.getEndTime(),
                 scheduleDto.getWriter(),
+                scheduleDto.getParticipants(),
                 scheduleDto.getAlarm(),
                 scheduleDto.getComment());
     }
