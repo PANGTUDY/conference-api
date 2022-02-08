@@ -25,6 +25,11 @@ public class CalendarService {
                 .map(ScheduleDto::of);
     }
 
+    public Mono<ScheduleDto> findById(long id) {
+        return scheduleRepository.findWithParticipantsById(id)
+                .map(ScheduleDto::of);
+    }
+
     @Transactional
     public Mono<ScheduleDto> saveSchedule(ScheduleDto scheduleDto) {
         return scheduleRepository.save(Schedule.of(scheduleDto))

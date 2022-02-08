@@ -24,6 +24,11 @@ public class CalendarController {
         return calendarService.retrieveSchedules(year);
     }
 
+    @GetMapping("/schedules/{id}")
+    public Mono<ScheduleDto> getSchedulesById(@PathVariable long id) {
+        return calendarService.findById(id);
+    }
+
     @PostMapping("/schedule")
     public Mono<ScheduleDto> setSchedule(
             @RequestBody ScheduleDto scheduleDto

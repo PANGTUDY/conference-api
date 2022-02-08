@@ -1,10 +1,7 @@
 package com.pangtudy.conferenceapi.entity;
 
 import com.pangtudy.conferenceapi.dto.ScheduleDto;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.relational.core.mapping.Table;
@@ -15,6 +12,8 @@ import java.util.List;
 @Table
 @Getter
 @Setter
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
 @ToString
 public class Schedule {
@@ -29,7 +28,7 @@ public class Schedule {
     String writer;
 
     @Transient
-    List<ParticipantInfo> participants;
+    List<Users> participants;
     Integer alarm;
     String comment;
 
@@ -46,4 +45,5 @@ public class Schedule {
                 scheduleDto.getAlarm(),
                 scheduleDto.getComment());
     }
+
 }

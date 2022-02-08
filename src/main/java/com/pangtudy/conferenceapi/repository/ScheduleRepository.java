@@ -6,4 +6,5 @@ import reactor.core.publisher.Flux;
 
 public interface ScheduleRepository extends ReactiveCrudRepository<Schedule, Long>, CustomScheduleRepository {
     Flux<Schedule> findByYearOrderByStartTime(int year);
+
 }
