@@ -21,7 +21,7 @@ public class CalendarService {
     private final ScheduleChannel scheduleChannel;
 
     public Flux<ScheduleDto> retrieveSchedules(int year) {
-        return scheduleRepository.findByYearOrderByStartTime(year)
+        return scheduleRepository.findWithParticipantsByYearOrderByStartTime(year)
                 .map(ScheduleDto::of);
     }
 
