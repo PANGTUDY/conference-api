@@ -1,89 +1,106 @@
 package com.pangtudy.conferenceapi.repository;
 
+import com.pangtudy.conferenceapi.entity.Participant;
 import com.pangtudy.conferenceapi.entity.Schedule;
-import com.pangtudy.conferenceapi.entity.Users;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Repository;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
-import java.math.BigDecimal;
-import java.time.LocalTime;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.springframework.data.relational.core.query.Criteria.where;
+import static org.springframework.data.relational.core.query.Query.query;
 
 @Repository
 @RequiredArgsConstructor
 public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
-    private final R2dbcEntityTemplate r2dbcEntityTemplate;
+    private final R2dbcEntityTemplate r2dbcTemplate;
 
-    // select * from schedule where ID=18;
-    // select u.name, u.email from participant_info p inner join user_info u on p.user_id = u.id where p.schedule_id = 18;
     @Override
     public Mono<Schedule> findWithParticipantsById(Long id) {
-        String query = "SELECT * FROM SCHEDULE WHERE ID = :id";
-
-        return r2dbcEntityTemplate.getDatabaseClient().sql(query)
-                .bind("id", id)
-                .fetch()
-                .first()
-                .flatMap(schedule -> {
-                    String query2 = "SELECT u.NAME, u.EMAIL FROM PARTICIPANT_INFO as p LEFT OUTER JOIN USER_INFO as u ON p.USER_ID = u.ID WHERE p.SCHEDULE_ID = :id";
-
-                    return r2dbcEntityTemplate.getDatabaseClient().sql(query2)
-                            .bind("id", id)
-                            .fetch()
-                            .all()
-                            .map(user -> Users.of((String) user.get("NAME"), (String) user.get("EMAIL")))
+        return r2dbcTemplate.selectOne(query(where("id").is(id)), Schedule.class)
+                .flatMap(schedule -> r2dbcTemplate.select(query(where("schedule_id").is(id)), Participant.class)
                             .collectList()
-                            .map(users -> Schedule.builder()
-                                    .id(Long.valueOf((Integer) schedule.get("ID")))
-                                    .year(((BigDecimal) schedule.get("YEAR")).intValue())
-                                    .month(((BigDecimal) schedule.get("MONTH")).intValue())
-                                    .day(((BigDecimal) schedule.get("DAY")).intValue())
-                                    .title((String) schedule.get("TITLE"))
-                                    .startTime((LocalTime) schedule.get("START_TIME"))
-                                    .endTime((LocalTime) schedule.get("END_TIME"))
-                                    .writer((String) schedule.get("WRITER"))
-                                    .alarm((Integer) schedule.get("ALARM"))
-                                    .comment((String) schedule.get("COMMENT"))
-                                    .participants(users)
-                                    .build());
-                });
+                            .map(participants -> {
+                                schedule.setParticipants(participants);
+                                return schedule;
+                            })
+                );
     }
 
-    // select * from schedule where year = :year
-    // select u.name, u.email from participant_info p inner join user_info u on p.user_id = u.id where p.schedule_id = :id;
     @Override
     public Flux<Schedule> findWithParticipantsByYearOrderByStartTime(int year) {
-        String query = "SELECT * FROM SCHEDULE WHERE YEAR = :year";
+        // TODO : N + 1 문제 해결하기
+        return r2dbcTemplate.select(query(where("year").is(year)), Schedule.class)
+                .flatMap(schedule -> r2dbcTemplate.select(query(where("schedule_id").is(schedule.getId())), Participant.class)
+                        .collectList()
+                        .map(participants -> {
+                            schedule.setParticipants(participants);
+                            return schedule;
+                        })
+                );
+    }
 
-        return r2dbcEntityTemplate.getDatabaseClient().sql(query)
-                .bind("year", year)
-                .fetch()
-                .all()
-                .flatMap(schedule -> {
-                    String query2 = "SELECT u.NAME, u.EMAIL FROM PARTICIPANT_INFO as p LEFT OUTER JOIN USER_INFO as u ON p.USER_ID = u.ID WHERE p.SCHEDULE_ID = :id";
-                    Long scheduleId = Long.valueOf((Integer) schedule.get("ID"));
+    @Override
+    public Mono<Schedule> saveWithParticipant(Schedule schedule) {
+        if (schedule.getId() == null || schedule.getId() == 0) {
+            return this.insertWithParticipant(schedule);
+        }
+        else {
+            return this.updateWithParticipant(schedule);
+        }
+    }
 
-                    return r2dbcEntityTemplate.getDatabaseClient().sql(query2)
-                            .bind("id", scheduleId)
-                            .fetch()
-                            .all()
-                            .map(user -> Users.of((String) user.get("NAME"), (String) user.get("EMAIL")))
-                            .collectList()
-                            .map(users -> Schedule.builder()
-                                    .id(scheduleId)
-                                    .year(((BigDecimal) schedule.get("YEAR")).intValue())
-                                    .month(((BigDecimal) schedule.get("MONTH")).intValue())
-                                    .day(((BigDecimal) schedule.get("DAY")).intValue())
-                                    .title((String) schedule.get("TITLE"))
-                                    .startTime((LocalTime) schedule.get("START_TIME"))
-                                    .endTime((LocalTime) schedule.get("END_TIME"))
-                                    .writer((String) schedule.get("WRITER"))
-                                    .alarm((Integer) schedule.get("ALARM"))
-                                    .comment((String) schedule.get("COMMENT"))
-                                    .participants(users)
-                                    .build());
-                });
+    @Override
+    public Mono<Void> deleteWithParticipantById(long id) {
+        r2dbcTemplate.delete(query(where("id").is(id)), Schedule.class);
+        r2dbcTemplate.delete(query(where("schedule_id").is(id)), Participant.class);
+
+        return Mono.empty();
+    }
+
+    private Mono<Schedule> insertWithParticipant(Schedule schedule) {
+        return r2dbcTemplate.insert(schedule)
+                .flatMap(s ->
+                        Flux.concat(schedule.getParticipants().stream()
+                                .map(participant -> r2dbcTemplate.insert(Participant.of(schedule.getId(), participant.getUserEmail(), participant.getUserName())))
+                                .collect(Collectors.toList()))
+                                .collectList()
+                                .map(participants -> {
+                                    s.setParticipants(participants);
+                                    return s;
+                                })
+                );
+    }
+
+    private Mono<Schedule> updateWithParticipant(Schedule schedule) {
+        return r2dbcTemplate.update(schedule)
+                .flatMap(findSchedule -> Flux.concat(schedule.getParticipants().stream()
+                                .map(participant -> this.selectOneByScheduleIdAndUserEmail(schedule.getId(), participant))
+                                .collect(Collectors.toList()))
+                        .collectList()
+                        .map(participants -> {
+                            this.deleteByScheduleIdAndIdNotIn(schedule.getId(), participants.stream().map(Participant::getId).collect(Collectors.toList()));
+                            findSchedule.setParticipants(participants);
+                            return findSchedule;
+                        })
+                );
+    }
+
+    private Mono<Participant> selectOneByScheduleIdAndUserEmail(Long scheduleId, Participant participant) {
+        return r2dbcTemplate.selectOne(query(where("user_email").is(participant.getUserEmail())
+                        .and("schedule_id").is(scheduleId)), Participant.class)
+                .flatMap(findParticipant -> r2dbcTemplate.update(Participant.of(findParticipant.getId(), scheduleId, participant.getUserEmail(), participant.getUserName())))
+                .switchIfEmpty(r2dbcTemplate.insert(Participant.of(scheduleId, participant.getUserEmail(), participant.getUserName())));
+    }
+
+    private void deleteByScheduleIdAndIdNotIn(Long scheduleId, List<Long> ids) {
+        r2dbcTemplate.delete(query(where("id")
+                        .notIn(ids)
+                        .and(where("schedule_id").is(scheduleId))), Participant.class)
+                .subscribe();
     }
 }

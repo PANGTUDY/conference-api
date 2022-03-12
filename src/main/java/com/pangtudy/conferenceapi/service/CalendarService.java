@@ -32,7 +32,7 @@ public class CalendarService {
 
     @Transactional
     public Mono<ScheduleDto> saveSchedule(ScheduleDto scheduleDto) {
-        return scheduleRepository.save(Schedule.of(scheduleDto))
+        return scheduleRepository.saveWithParticipant(Schedule.of(scheduleDto))
                 .map(schedule -> {
                     scheduleChannel.getSink()
                             .tryEmitNext(ScheduleEventDto.builder()
@@ -45,11 +45,12 @@ public class CalendarService {
 
     @Transactional
     public Mono<ScheduleDto> updateSchedule(long idx, ScheduleDto scheduleDto) {
-        return scheduleRepository.findById(idx)
+        return scheduleRepository.findWithParticipantsById(idx)
                 .map(schedule -> {
                     schedule.setTitle(scheduleDto.getTitle());
                     schedule.setStartTime(scheduleDto.getStartTime());
                     schedule.setEndTime(scheduleDto.getEndTime());
+                    schedule.setParticipants(scheduleDto.getParticipants());
                     schedule.setComment(scheduleDto.getComment());
                     schedule.setAlarm(scheduleDto.getAlarm());
 
@@ -60,12 +61,14 @@ public class CalendarService {
                                     .build());
                     return schedule;
                 })
-                .flatMap(schedule -> scheduleRepository.save(schedule).map(ScheduleDto::of));
+                .flatMap(schedule -> scheduleRepository.saveWithParticipant(schedule)
+                        .map(ScheduleDto::of)
+                );
     }
 
     @Transactional
     public Mono<Void> deleteSchedule(long idx) {
-        return scheduleRepository.deleteById(idx)
+        return scheduleRepository.deleteWithParticipantById(idx)
                 .doAfterTerminate(() -> {
                     scheduleChannel.getSink()
                             .tryEmitNext(ScheduleEventDto.builder()

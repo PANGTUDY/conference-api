@@ -1,7 +1,7 @@
 package com.pangtudy.conferenceapi.dto;
 
+import com.pangtudy.conferenceapi.entity.Participant;
 import com.pangtudy.conferenceapi.entity.Schedule;
-import com.pangtudy.conferenceapi.entity.Users;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -23,7 +23,7 @@ public class ScheduleDto {
     private LocalTime startTime;
     private LocalTime endTime;
     private String writer;
-    private List<Users> participants;
+    private List<Participant> participants;
     private int alarm;
     private String comment;
 
