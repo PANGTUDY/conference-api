@@ -32,7 +32,7 @@ public class CalendarService {
 
     @Transactional
     public Mono<ScheduleDto> saveSchedule(ScheduleDto scheduleDto) {
-        return scheduleRepository.save(Schedule.of(scheduleDto))
+        return scheduleRepository.saveWithParticipant(Schedule.of(scheduleDto))
                 .map(schedule -> {
                     scheduleChannel.getSink()
                             .tryEmitNext(ScheduleEventDto.builder()

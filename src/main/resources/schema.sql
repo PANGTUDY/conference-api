@@ -11,18 +11,12 @@ CREATE TABLE schedule (
     comment VARCHAR(2048)
 );
 
-CREATE TABLE user_info (
-    id INT(20) AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(10),
-    email VARCHAR(32) not null unique
-);
-
-CREATE TABLE participant_info (
+CREATE TABLE participant (
     id INT(20) AUTO_INCREMENT PRIMARY KEY,
     schedule_id INT(20) not null,
-    user_id INT(20) not null,
-    FOREIGN KEY (schedule_id) REFERENCES schedule (id),
-    FOREIGN KEY (user_id) REFERENCES user_info (id)
+    user_email VARCHAR(256) not null,
+    user_name VARCHAR,
+    FOREIGN KEY (schedule_id) REFERENCES schedule (id)
 );
 
 INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
@@ -63,28 +57,13 @@ VALUES (2022, 1, 20, '스터디 회의', '20:00:00', '22:00:00', 'ch4njun', 0, '
 INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
 VALUES (2022, 1, 30, '회의장 개발 회의', '22:00:00', '00:00:00', 'ch4njun', 1, 'SAMPLE12');
 
-INSERT INTO user_info(name, email)
-VALUES ('김응주', 'dmdwn3979@naver.com');
-INSERT INTO user_info(name, email)
-VALUES ('박찬준', 'slolee@naver.com');
-INSERT INTO user_info(name, email)
-VALUES ('김민주', 'alswn123@naver.com');
-INSERT INTO user_info(name, email)
-VALUES ('박혜원', 'gPdnjs123@naver.com');
-INSERT INTO user_info(name, email)
-VALUES ('서진하', 'wlsgk123@naver.com');
-INSERT INTO user_info(name, email)
-VALUES ('임재창', 'wockd123@naver.com');
-INSERT INTO user_info(name, email)
-VALUES ('원철황', 'cjfghkd123@naver.com');
-
-INSERT INTO participant_info(schedule_id, user_id) VALUES (18, 1);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (18, 2);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (18, 3);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (18, 4);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (18, 5);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (16, 2);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (16, 3);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (15, 2);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (15, 3);
-INSERT INTO participant_info(schedule_id, user_id) VALUES (15, 4);
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '김응주', 'dmdwn3979@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '박찬준', 'slolee@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '김민주', 'alswn123@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '박혜원', 'gPdnjs123@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '임재창', 'wockd123@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (16, '박찬준', 'slolee@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (16, '김민주', 'alswn123@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (15, '박찬준', 'slolee@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (15, '김민주', 'alswn123@naver.com');
+INSERT INTO participant(schedule_id, user_name, user_email) VALUES (15, '박혜원', 'gPdnjs123@naver.com');

@@ -28,7 +28,8 @@ public class Schedule {
     String writer;
 
     @Transient
-    List<Users> participants;
+    List<Participant> participants;
+
     Integer alarm;
     String comment;
 
