@@ -68,7 +68,7 @@ public class CalendarService {
 
     @Transactional
     public Mono<Void> deleteSchedule(long idx) {
-        return scheduleRepository.deleteById(idx)
+        return scheduleRepository.deleteWithParticipantById(idx)
                 .doAfterTerminate(() -> {
                     scheduleChannel.getSink()
                             .tryEmitNext(ScheduleEventDto.builder()

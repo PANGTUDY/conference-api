@@ -17,12 +17,12 @@ import static org.springframework.data.relational.core.query.Query.query;
 @Repository
 @RequiredArgsConstructor
 public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
-    private final R2dbcEntityTemplate r2dbcEntityTemplate;
+    private final R2dbcEntityTemplate r2dbcTemplate;
 
     @Override
     public Mono<Schedule> findWithParticipantsById(Long id) {
-        return r2dbcEntityTemplate.selectOne(query(where("id").is(id)), Schedule.class)
-                .flatMap(schedule -> r2dbcEntityTemplate.select(query(where("schedule_id").is(id)), Participant.class)
+        return r2dbcTemplate.selectOne(query(where("id").is(id)), Schedule.class)
+                .flatMap(schedule -> r2dbcTemplate.select(query(where("schedule_id").is(id)), Participant.class)
                             .collectList()
                             .map(participants -> {
                                 schedule.setParticipants(participants);
@@ -34,8 +34,8 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     @Override
     public Flux<Schedule> findWithParticipantsByYearOrderByStartTime(int year) {
         // TODO : N + 1 문제 해결하기
-        return r2dbcEntityTemplate.select(query(where("year").is(year)), Schedule.class)
-                .flatMap(schedule -> r2dbcEntityTemplate.select(query(where("schedule_id").is(schedule.getId())), Participant.class)
+        return r2dbcTemplate.select(query(where("year").is(year)), Schedule.class)
+                .flatMap(schedule -> r2dbcTemplate.select(query(where("schedule_id").is(schedule.getId())), Participant.class)
                         .collectList()
                         .map(participants -> {
                             schedule.setParticipants(participants);
@@ -54,15 +54,19 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
         }
     }
 
-    // insert into schedule values (:year, :month, :day, :title, :startTime, :endTime, :writer, :alarm, :comment);
-    // insert into participant_info values (:schedule_id, :user_email, :user_name);
-    // insert into participant_info values (:schedule_id, :user_email, :user_name);
-    // insert into participant_info values (:schedule_id, :user_email, :user_name);
+    @Override
+    public Mono<Void> deleteWithParticipantById(long id) {
+        r2dbcTemplate.delete(query(where("id").is(id)), Schedule.class);
+        r2dbcTemplate.delete(query(where("schedule_id").is(id)), Participant.class);
+
+        return Mono.empty();
+    }
+
     private Mono<Schedule> insertWithParticipant(Schedule schedule) {
-        return r2dbcEntityTemplate.insert(schedule)
+        return r2dbcTemplate.insert(schedule)
                 .flatMap(s ->
                         Flux.concat(schedule.getParticipants().stream()
-                                .map(participant -> r2dbcEntityTemplate.insert(Participant.of(schedule.getId(), participant.getUserEmail(), participant.getUserName())))
+                                .map(participant -> r2dbcTemplate.insert(Participant.of(schedule.getId(), participant.getUserEmail(), participant.getUserName())))
                                 .collect(Collectors.toList()))
                                 .collectList()
                                 .map(participants -> {
@@ -73,7 +77,7 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     }
 
     private Mono<Schedule> updateWithParticipant(Schedule schedule) {
-        return r2dbcEntityTemplate.update(schedule)
+        return r2dbcTemplate.update(schedule)
                 .flatMap(findSchedule -> Flux.concat(schedule.getParticipants().stream()
                                 .map(participant -> this.selectOneByScheduleIdAndUserEmail(schedule.getId(), participant))
                                 .collect(Collectors.toList()))
@@ -87,14 +91,14 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     }
 
     private Mono<Participant> selectOneByScheduleIdAndUserEmail(Long scheduleId, Participant participant) {
-        return r2dbcEntityTemplate.selectOne(query(where("user_email").is(participant.getUserEmail())
+        return r2dbcTemplate.selectOne(query(where("user_email").is(participant.getUserEmail())
                         .and("schedule_id").is(scheduleId)), Participant.class)
-                .flatMap(findParticipant -> r2dbcEntityTemplate.update(Participant.of(findParticipant.getId(), scheduleId, participant.getUserEmail(), participant.getUserName())))
-                .switchIfEmpty(r2dbcEntityTemplate.insert(Participant.of(scheduleId, participant.getUserEmail(), participant.getUserName())));
+                .flatMap(findParticipant -> r2dbcTemplate.update(Participant.of(findParticipant.getId(), scheduleId, participant.getUserEmail(), participant.getUserName())))
+                .switchIfEmpty(r2dbcTemplate.insert(Participant.of(scheduleId, participant.getUserEmail(), participant.getUserName())));
     }
 
     private void deleteByScheduleIdAndIdNotIn(Long scheduleId, List<Long> ids) {
-        r2dbcEntityTemplate.delete(query(where("id")
+        r2dbcTemplate.delete(query(where("id")
                         .notIn(ids)
                         .and(where("schedule_id").is(scheduleId))), Participant.class)
                 .subscribe();
