@@ -42,4 +42,13 @@ public class Participant {
                 .userName(userName)
                 .build();
     }
+
+    public static Participant of(Long id, Long scheduleId, String userEmail, String userName) {
+        return Participant.builder()
+                .id(id)
+                .scheduleId(scheduleId)
+                .userEmail(userEmail)
+                .userName(userName)
+                .build();
+    }
 }

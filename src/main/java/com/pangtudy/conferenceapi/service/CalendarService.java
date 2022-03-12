@@ -45,11 +45,12 @@ public class CalendarService {
 
     @Transactional
     public Mono<ScheduleDto> updateSchedule(long idx, ScheduleDto scheduleDto) {
-        return scheduleRepository.findById(idx)
+        return scheduleRepository.findWithParticipantsById(idx)
                 .map(schedule -> {
                     schedule.setTitle(scheduleDto.getTitle());
                     schedule.setStartTime(scheduleDto.getStartTime());
                     schedule.setEndTime(scheduleDto.getEndTime());
+                    schedule.setParticipants(scheduleDto.getParticipants());
                     schedule.setComment(scheduleDto.getComment());
                     schedule.setAlarm(scheduleDto.getAlarm());
 
@@ -60,7 +61,9 @@ public class CalendarService {
                                     .build());
                     return schedule;
                 })
-                .flatMap(schedule -> scheduleRepository.save(schedule).map(ScheduleDto::of));
+                .flatMap(schedule -> scheduleRepository.saveWithParticipant(schedule)
+                        .map(ScheduleDto::of)
+                );
     }
 
     @Transactional
