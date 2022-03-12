@@ -5,7 +5,6 @@ import com.pangtudy.conferenceapi.entity.Schedule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.r2dbc.core.R2dbcEntityTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -45,7 +44,6 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     }
 
     @Override
-    @Transactional
     public Mono<Schedule> saveWithParticipant(Schedule schedule) {
         if (schedule.getId() == null || schedule.getId() == 0) {
             return this.insertWithParticipant(schedule);
