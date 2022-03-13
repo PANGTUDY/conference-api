@@ -56,10 +56,9 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
 
     @Override
     public Mono<Void> deleteWithParticipantById(long id) {
-        r2dbcTemplate.delete(query(where("id").is(id)), Schedule.class);
-        r2dbcTemplate.delete(query(where("schedule_id").is(id)), Participant.class);
-
-        return Mono.empty();
+        return r2dbcTemplate.delete(query(where("id").is(id)), Schedule.class)
+                .doAfterTerminate(() -> r2dbcTemplate.delete(query(where("schedule_id").is(id)), Participant.class))
+                .cast(Void.class);
     }
 
     private Mono<Schedule> insertWithParticipant(Schedule schedule) {
