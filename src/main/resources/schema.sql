@@ -14,8 +14,8 @@ CREATE TABLE schedule (
 CREATE TABLE participant (
     id INT(20) AUTO_INCREMENT PRIMARY KEY,
     schedule_id INT(20) not null,
-    user_email VARCHAR(256) not null,
-    user_name VARCHAR,
+    email VARCHAR(256) not null,
+    name VARCHAR,
     FOREIGN KEY (schedule_id) REFERENCES schedule (id)
 );
 
@@ -57,13 +57,13 @@ VALUES (2022, 1, 20, '스터디 회의', '20:00:00', '22:00:00', 'ch4njun', 0, '
 INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
 VALUES (2022, 1, 30, '회의장 개발 회의', '22:00:00', '00:00:00', 'ch4njun', 1, 'SAMPLE12');
 
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '김응주', 'dmdwn3979@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '박찬준', 'slolee@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '김민주', 'alswn123@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '박혜원', 'gPdnjs123@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (18, '임재창', 'wockd123@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (16, '박찬준', 'slolee@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (16, '김민주', 'alswn123@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (15, '박찬준', 'slolee@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (15, '김민주', 'alswn123@naver.com');
-INSERT INTO participant(schedule_id, user_name, user_email) VALUES (15, '박혜원', 'gPdnjs123@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (18, '김응주', 'dmdwn3979@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (18, '박찬준', 'slolee@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (18, '김민주', 'alswn123@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (18, '박혜원', 'gPdnjs123@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (18, '임재창', 'wockd123@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (16, '박찬준', 'slolee@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (16, '김민주', 'alswn123@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (15, '박찬준', 'slolee@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (15, '김민주', 'alswn123@naver.com');
+INSERT INTO participant(schedule_id, name, email) VALUES (15, '박혜원', 'gPdnjs123@naver.com');

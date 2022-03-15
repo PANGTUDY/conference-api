@@ -21,34 +21,34 @@ public class Participant {
     @JsonIgnore
     private Long scheduleId;
 
-    private String userEmail;
-    private String userName;
+    private String email;
+    private String name;
 
     @Transient
     @JsonIgnore
     private Schedule schedule;
 
-    public static Participant of(String userEmail, String userName) {
+    public static Participant of(String email, String name) {
         return Participant.builder()
-                .userEmail(userEmail)
-                .userName(userName)
+                .email(email)
+                .name(name)
                 .build();
     }
 
-    public static Participant of(Long scheduleId, String userEmail, String userName) {
+    public static Participant of(Long scheduleId, String email, String name) {
         return Participant.builder()
                 .scheduleId(scheduleId)
-                .userEmail(userEmail)
-                .userName(userName)
+                .email(email)
+                .name(name)
                 .build();
     }
 
-    public static Participant of(Long id, Long scheduleId, String userEmail, String userName) {
+    public static Participant of(Long id, Long scheduleId, String email, String name) {
         return Participant.builder()
                 .id(id)
                 .scheduleId(scheduleId)
-                .userEmail(userEmail)
-                .userName(userName)
+                .email(email)
+                .name(name)
                 .build();
     }
 }

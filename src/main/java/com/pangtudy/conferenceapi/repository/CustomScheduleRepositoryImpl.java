@@ -65,7 +65,7 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
         return r2dbcTemplate.insert(schedule)
                 .flatMap(s ->
                         Flux.concat(schedule.getParticipants().stream()
-                                .map(participant -> r2dbcTemplate.insert(Participant.of(schedule.getId(), participant.getUserEmail(), participant.getUserName())))
+                                .map(participant -> r2dbcTemplate.insert(Participant.of(schedule.getId(), participant.getEmail(), participant.getName())))
                                 .collect(Collectors.toList()))
                                 .collectList()
                                 .map(participants -> {
@@ -90,10 +90,10 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     }
 
     private Mono<Participant> selectOneByScheduleIdAndUserEmail(Long scheduleId, Participant participant) {
-        return r2dbcTemplate.selectOne(query(where("user_email").is(participant.getUserEmail())
+        return r2dbcTemplate.selectOne(query(where("user_email").is(participant.getEmail())
                         .and("schedule_id").is(scheduleId)), Participant.class)
-                .flatMap(findParticipant -> r2dbcTemplate.update(Participant.of(findParticipant.getId(), scheduleId, participant.getUserEmail(), participant.getUserName())))
-                .switchIfEmpty(r2dbcTemplate.insert(Participant.of(scheduleId, participant.getUserEmail(), participant.getUserName())));
+                .flatMap(findParticipant -> r2dbcTemplate.update(Participant.of(findParticipant.getId(), scheduleId, participant.getEmail(), participant.getName())))
+                .switchIfEmpty(r2dbcTemplate.insert(Participant.of(scheduleId, participant.getEmail(), participant.getName())));
     }
 
     private void deleteByScheduleIdAndIdNotIn(Long scheduleId, List<Long> ids) {
