@@ -1,8 +1,8 @@
-CREATE TABLE schedule (
+CREATE TABLE IF NOT EXISTS schedule (
     id INT(20) AUTO_INCREMENT PRIMARY KEY,
-    year NUMBER(4) not null,
-    month NUMBER(2) not null,
-    day NUMBER(2) not null,
+    year INT(4) not null,
+    month INT(2) not null,
+    day INT(2) not null,
     title VARCHAR(256) not null,
     start_time time not null,
     end_time time not null,
@@ -11,12 +11,13 @@ CREATE TABLE schedule (
     comment VARCHAR(2048)
 );
 
-CREATE TABLE participant (
+CREATE TABLE IF NOT EXISTS participant (
     id INT(20) AUTO_INCREMENT PRIMARY KEY,
     schedule_id INT(20) not null,
     email VARCHAR(256) not null,
-    name VARCHAR,
-    FOREIGN KEY (schedule_id) REFERENCES schedule (id) ON DELETE CASCADE 
+    name VARCHAR(256),
+    INDEX (schedule_id),
+    FOREIGN KEY (schedule_id) REFERENCES schedule (id) ON DELETE CASCADE
 );
 
 INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
