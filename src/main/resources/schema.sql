@@ -16,7 +16,7 @@ CREATE TABLE participant (
     schedule_id INT(20) not null,
     email VARCHAR(256) not null,
     name VARCHAR,
-    FOREIGN KEY (schedule_id) REFERENCES schedule (id)
+    FOREIGN KEY (schedule_id) REFERENCES schedule (id) ON DELETE CASCADE 
 );
 
 INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)

@@ -10,5 +10,5 @@ public interface CustomScheduleRepository {
     Mono<Schedule> findWithParticipantsById(Long id);
     Flux<Schedule> findWithParticipantsByYearOrderByStartTime(int year);
     Mono<Schedule> saveWithParticipant(Schedule schedule);
-    Mono<Void> deleteWithParticipantById(long id);
+    Mono<Integer> deleteWithParticipantById(long id);
 }

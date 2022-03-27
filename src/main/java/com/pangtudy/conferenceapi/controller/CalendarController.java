@@ -45,7 +45,7 @@ public class CalendarController {
     }
 
     @DeleteMapping("/schedules/{idx}")
-    public Mono<Void> deleteSchedule(
+    public Mono<Integer> deleteSchedule(
             @PathVariable long idx
     ) {
         return calendarService.deleteSchedule(idx);

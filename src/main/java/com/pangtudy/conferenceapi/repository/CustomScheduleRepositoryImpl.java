@@ -55,10 +55,9 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     }
 
     @Override
-    public Mono<Void> deleteWithParticipantById(long id) {
+    public Mono<Integer> deleteWithParticipantById(long id) {
         return r2dbcTemplate.delete(query(where("id").is(id)), Schedule.class)
-                .doAfterTerminate(() -> r2dbcTemplate.delete(query(where("schedule_id").is(id)), Participant.class))
-                .cast(Void.class);
+                .doAfterTerminate(() -> r2dbcTemplate.delete(query(where("schedule_id").is(id)), Participant.class));
     }
 
     private Mono<Schedule> insertWithParticipant(Schedule schedule) {
@@ -90,7 +89,7 @@ public class CustomScheduleRepositoryImpl implements CustomScheduleRepository {
     }
 
     private Mono<Participant> selectOneByScheduleIdAndUserEmail(Long scheduleId, Participant participant) {
-        return r2dbcTemplate.selectOne(query(where("user_email").is(participant.getEmail())
+        return r2dbcTemplate.selectOne(query(where("email").is(participant.getEmail())
                         .and("schedule_id").is(scheduleId)), Participant.class)
                 .flatMap(findParticipant -> r2dbcTemplate.update(Participant.of(findParticipant.getId(), scheduleId, participant.getEmail(), participant.getName())))
                 .switchIfEmpty(r2dbcTemplate.insert(Participant.of(scheduleId, participant.getEmail(), participant.getName())));
