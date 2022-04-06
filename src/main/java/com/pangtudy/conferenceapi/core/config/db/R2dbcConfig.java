@@ -3,6 +3,7 @@ package com.pangtudy.conferenceapi.core.config.db;
 import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
 import io.r2dbc.spi.ConnectionFactoryOptions;
+import io.r2dbc.spi.Option;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -28,6 +29,9 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration {
     @Value("${r2dbc.password}")
     private String password;
 
+    @Value("${r2dbc.database}")
+    private String database;
+
     @Override
     public ConnectionFactory connectionFactory() {
         ConnectionFactoryOptions options = ConnectionFactoryOptions.builder()
@@ -36,8 +40,10 @@ public class R2dbcConfig extends AbstractR2dbcConfiguration {
                 .option(USER, user)
                 .option(PORT, 3306)
                 .option(PASSWORD, password)
-                .option(DATABASE, "ocms")
+                .option(DATABASE, database)
                 .option(SSL, false)
+                .option(Option.valueOf("useUnicode"), true)
+                .option(Option.valueOf("characterEncoding"), "utf8")
                 .build();
         return ConnectionFactories.get(options);
     }

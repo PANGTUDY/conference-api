@@ -20,6 +20,11 @@ CREATE TABLE IF NOT EXISTS participant (
     FOREIGN KEY (schedule_id) REFERENCES schedule (id) ON DELETE CASCADE
 );
 
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE participant;
+TRUNCATE schedule;
+SET FOREIGN_KEY_CHECKS = 1;
+
 INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
 VALUES (2021, 10, 5, '프로젝트 회의', '20:00:00', '22:00:00', 'ch4njun', 1, 'SAMPLE1');
 INSERT INTO schedule(year, month, day, title, start_time, end_time, writer, alarm, comment)
