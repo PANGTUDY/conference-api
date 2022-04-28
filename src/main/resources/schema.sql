@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS schedule (
     writer VARCHAR(16) not null,
     alarm INT(1),
     comment VARCHAR(2048)
-);
+) DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS participant (
     id INT(20) AUTO_INCREMENT PRIMARY KEY,
@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS participant (
     name VARCHAR(256),
     INDEX (schedule_id),
     FOREIGN KEY (schedule_id) REFERENCES schedule (id) ON DELETE CASCADE
-);
+) DEFAULT CHARSET=utf8;
 
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE participant;
