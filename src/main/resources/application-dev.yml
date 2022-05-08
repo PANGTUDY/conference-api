@@ -1,5 +1,8 @@
 
 eureka:
+    instance:
+        prefer-ip-address: true
+        ip-address: 116.43.4.165
     client:
         service-url:
             defaultZone: http://ec2-44-202-26-241.compute-1.amazonaws.com:8761/eureka
