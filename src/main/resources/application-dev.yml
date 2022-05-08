@@ -1,5 +1,5 @@
 r2dbc:
-    host: ec2-3-82-154-50.compute-1.amazonaws.com
+    host: 34.235.128.109
     user: pangtudy
     password: Dnjs960131!
     database: conference
