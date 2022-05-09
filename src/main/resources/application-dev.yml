@@ -1,5 +1,7 @@
 
 eureka:
+    instance:
+        non-secure-port: 10831
     client:
         service-url:
             defaultZone: http://ip-172-31-83-143.ec2.internal:8761/eureka
