@@ -1,0 +1,13 @@
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka
+    register-with-eureka: true
+    fetch-registry: true
+
+r2dbc:
+  host: 127.0.0.1
+  user: ocms_admin
+  password: ocms
+  database: ocms
